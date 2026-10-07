@@ -43,7 +43,7 @@ export async function getModels() {
 export async function runAnalysis(
   audioId: string,
   modelIds: string[],
-  options: { hybridMode?: boolean; combineStrategy?: string } = {},
+  options: { hybridMode?: boolean } = {},
 ) {
   const res = await fetch(`${API_BASE}/analysis`, {
     method: "POST",
@@ -54,7 +54,6 @@ export async function runAnalysis(
       audio_id: audioId,
       model_ids: modelIds,
       hybrid_mode: options.hybridMode ?? false,
-      combine_strategy: options.combineStrategy ?? "weighted",
     }),
   });
   if (!res.ok) {

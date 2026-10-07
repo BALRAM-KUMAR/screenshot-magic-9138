@@ -142,7 +142,6 @@ function Index() {
   const [activeSegment, setActiveSegment] = useState<number | null>(null);
   const [filter, setFilter] = useState("All emotions");
   const [hybridMode, setHybridMode] = useState(false);
-  const [combineStrategy, setCombineStrategy] = useState("weighted");
   const inputRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const stopSegmentPlaybackRef = useRef<(() => void) | null>(null);
@@ -246,10 +245,7 @@ function Index() {
     setActiveSegment(null);
     try {
       const uploaded = await uploadAudio(file);
-      const response = await runAnalysis(String(uploaded.id ?? uploaded.audio_id), selected, {
-        hybridMode,
-        combineStrategy,
-      });
+      const response = await runAnalysis(String(uploaded.id ?? uploaded.audio_id), selected, { hybridMode });
       const normalized = normalizeResponse(response);
       setAnalysis(normalized);
       setActiveModel(
@@ -390,21 +386,6 @@ function Index() {
                 </span>
               </span>
             </label>
-            {hybridMode && (
-              <label className="mb-4 flex items-center justify-between gap-3 text-sm">
-                <span>Result combination</span>
-                <select
-                  value={combineStrategy}
-                  onChange={(event) => setCombineStrategy(event.target.value)}
-                  className="rounded-lg border bg-card px-2.5 py-1.5 text-xs outline-none"
-                >
-                  <option value="weighted">Balanced (conflicts become neutral)</option>
-                  <option value="audio_first">Prefer audio</option>
-                  <option value="text_first">Prefer transcript</option>
-                  <option value="majority_vote">Majority vote</option>
-                </select>
-              </label>
-            )}
             {models.length ? (
               <div className="flex flex-wrap gap-x-5 gap-y-3">
                 {models.map((model: any) => {
@@ -527,8 +508,12 @@ function Index() {
                   <p className="mt-1 text-sm font-semibold">{label(analysis.raw.hybrid.text_sentiment, "Unavailable")}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Combined · {String(analysis.raw.hybrid.strategy).replaceAll("_", " ")}</p>
+                  <p className="text-xs text-muted-foreground">Combined · confidence weighted</p>
                   <p className="mt-1 text-sm font-semibold">{label(analysis.raw.hybrid.sentiment, "Unavailable")}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {Math.round(Number(analysis.raw.hybrid.confidence ?? 0) * 100)}% uncalibrated model score
+                    {analysis.raw.hybrid.needs_review ? " · review recommended" : ""}
+                  </p>
                 </div>
               </div>
             )}
