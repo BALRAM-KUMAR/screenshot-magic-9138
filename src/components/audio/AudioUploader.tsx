@@ -10,7 +10,7 @@ interface Props {
   inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-const ACCEPT = ".mp3,.wav,.m4a,.flac,audio/*";
+const ACCEPT = ".mp3,.wav,.m4a,.flac,.webm,audio/*";
 
 export function AudioUploader({ onFile, inputRef }: Props) {
   const localRef = useRef<HTMLInputElement>(null);
@@ -78,7 +78,7 @@ export function AudioUploader({ onFile, inputRef }: Props) {
         <p className="text-lg font-medium">
           {recording ? `Recording… ${fmtTime(elapsed)}` : "Drop an audio file here"}
         </p>
-        <p className="mt-1 text-sm text-muted-foreground">MP3, WAV, M4A, FLAC · up to 50 MB</p>
+        <p className="mt-1 text-sm text-muted-foreground">MP3, WAV, M4A, FLAC, WEBM · up to 50 MB</p>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
         <Button onClick={() => ref.current?.click()} disabled={recording}>

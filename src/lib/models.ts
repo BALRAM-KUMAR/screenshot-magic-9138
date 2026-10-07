@@ -86,6 +86,14 @@ export const MODELS: AIModel[] = [
 
 export const getModel = (id: string) => MODELS.find((m) => m.id === id) ?? MODELS[0];
 export const modelColor = (id: string) => `var(--model-${getModel(id).colorIndex})`;
-export const emotionColor = (e: string) => `var(--emo-${e.toLowerCase()})`;
+const EMOTION_FALLBACK_COLORS = ["#38bdf8", "#a78bfa", "#fb7185", "#34d399", "#fbbf24", "#f472b6"];
+export const emotionColor = (e: string) => {
+  const key = e.trim().toLowerCase();
+  const known = new Set(["happy", "calm", "neutral", "sad", "angry", "frustrated", "surprised"]);
+  if (known.has(key)) return `var(--emo-${key})`;
+  if (key === "unknown" || !key) return "#94a3b8";
+  const hash = [...key].reduce((value, character) => value + character.charCodeAt(0), 0);
+  return EMOTION_FALLBACK_COLORS[hash % EMOTION_FALLBACK_COLORS.length] ?? "#38bdf8";
+};
 export const sentimentColor = (s: string) =>
   s === "Positive" ? "var(--positive)" : s === "Negative" ? "var(--negative)" : "var(--neutral)";

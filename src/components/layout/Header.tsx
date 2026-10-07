@@ -3,9 +3,7 @@ import { AudioLines } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Dashboard" },
-  { to: "/analyses", label: "Analyses" },
-  { to: "/compare", label: "Compare" },
-  { to: "/saved", label: "Saved" },
+  { to: "/history", label: "History" },
 ] as const;
 
 export function Header() {
